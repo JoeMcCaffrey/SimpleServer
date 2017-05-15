@@ -1,8 +1,10 @@
 from DataBase import *
 from flask import *
 from CommandQueue import *
+import sys
 
 app = Flask(__name__)
+app.debug = False
 
 # create database object
 db = DataBase('data.json')
@@ -13,7 +15,7 @@ commands = CommandQueue(db)
 def retrieve(key):
     if request.method == 'GET':
         if db.contains(key):
-            return db.get(key)+"\n"
+            return db.get(key) + "\n"
         else:
             return "404\n"
     else:
@@ -23,10 +25,8 @@ def retrieve(key):
 def route():
     data ={}
     data = request.data
-
-    print request.data
     if request.method == 'POST':
-        if(db.contains(data)):
+        if(db.lookup(data)):
             commands.enqueue(data, "update")
             return "200\n"
         else:
@@ -48,4 +48,4 @@ def save():
     else:
         return "404\n"
 
-app.run(port= 4000)
+app.run(port= sys.argv[1])

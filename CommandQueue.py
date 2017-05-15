@@ -13,16 +13,16 @@ class CommandQueue:
 
     def enqueue(self, key, command):
         #insert key and command right behind it
-        print key
         self._queue.insert(0,key)
         self._queue.insert(0,command)
 
     def dump(self):
         key = {}
         for i in range(0,len(self._queue)/2):
+            # dequeue key and command behind it
             key = self._queue.pop()
-            print key
             command = self._queue.pop()
+            # call appropriate database function
             if command == 'update':
                 self._db.update(key)
             elif command == 'delete':

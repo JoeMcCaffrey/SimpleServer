@@ -5,13 +5,24 @@ class DataBase:
     def __init__(self, dataFile):
         self.__dataFile = dataFile
 
-
+# lookup in db with just key
     def contains(self, key):
         with open(self.__dataFile) as file:
             data = json.load(file)
         #search for matching dict
         for m in data["map"]:
-            if m == key:
+            if m.keys()[0] == key:
+                return True
+            else:
+                return False
+
+# look up with key value pair
+    def lookup(self,key):
+        with open(self.__dataFile) as file:
+            data = json.load(file)
+        for m in data["map"]:
+            f = json.loads(key)
+            if m.keys()[0] == f.keys()[0]:
                 return True
             else:
                 return False
@@ -19,29 +30,24 @@ class DataBase:
 # insert into map list
     def insert(self, key):
         data = {}
-        print 'hello'+ key
         with open(self.__dataFile) as file:
             data = {}
             data = json.load(file)
-        print data
-        #jsonDict = {}
+        # remove string extras
         jsonDict= key.replace("'", "\"")
         d = json.loads(jsonDict)
-
         data["map"].append(d)
-        print data
         with open(self.__dataFile, 'w') as file:
-            json.dump(data, file)
+            json.dump(data, file, ensure_ascii = False)
 
 # delete dict from list
     def delete(self, key):
-        m = {}
+        # open file and find in maps list
         with open(self.__dataFile) as file:
             data = json.load(file)
         for m in data["map"]:
-            print m.keys()
-            print key
-            if m.keys()[0] == key:
+            f = json.loads(key)
+            if m.keys()[0] == f:
                 data["map"].remove(m)
         with open(self.__dataFile, 'w') as file:
             json.dump(data, file)
@@ -51,9 +57,11 @@ class DataBase:
         m = {}
         with open(self.__dataFile) as file:
             data = json.load(file)
+        # convert to unicode
+        f = json.loads(key)
         for m in data["map"]:
-            if m.keys() == key.keys():
-                m.update(key)
+            if m.keys() == f.keys():
+                m.update(f)
         with open(self.__dataFile, 'w') as file:
             json.dump(data, file)
 
@@ -68,10 +76,9 @@ class DataBase:
         json1 ={}
         with open(self.__dataFile) as file:
             data = json.load(file)
-            #json1[key] = data[key]
-            for m in data["map"]:
-                if m == key:
-                    return m
+        for m in data["map"]:
+            if m.keys()[0] == key:
+                return str(m)
 
 
     def getSize(self):
